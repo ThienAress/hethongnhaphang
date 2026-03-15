@@ -1,7 +1,8 @@
+import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
-function AdminLayout({ children }) {
+function AdminLayout() {
   return (
     <div className="flex">
       <Sidebar />
@@ -9,7 +10,9 @@ function AdminLayout({ children }) {
       <div className="flex-1">
         <Topbar />
 
-        <div className="p-6 bg-gray-100 min-h-screen">{children}</div>
+        <div className="p-6 bg-gray-100 min-h-screen">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
