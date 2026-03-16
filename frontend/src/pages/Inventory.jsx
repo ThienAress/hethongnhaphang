@@ -17,7 +17,9 @@ function Inventory() {
   }, []);
 
   const fetchInventory = async () => {
-    const res = await axios.get("http://localhost:5000/api/products/inventory");
+    const res = await axios.get(
+      "https://hethongnhaphang-backend.onrender.com/api/products/inventory",
+    );
     setProducts(res.data);
   };
 

@@ -34,28 +34,34 @@ function Purchase() {
   }, []);
 
   const fetchSuppliers = async () => {
-    const res = await axios.get("http://localhost:5000/api/suppliers", {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const res = await axios.get(
+      "https://hethongnhaphang-backend.onrender.com/api/suppliers",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
 
     setSuppliers(res.data);
   };
 
   const fetchProducts = async () => {
-    const res = await axios.get("http://localhost:5000/api/products", {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const res = await axios.get(
+      "https://hethongnhaphang-backend.onrender.com/api/products",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
 
     setProducts(res.data);
   };
 
   const handleSubmit = async () => {
     await axios.post(
-      "http://localhost:5000/api/purchases",
+      "https://hethongnhaphang-backend.onrender.com/api/purchases",
       {
         supplierId: supplier,
         productId: product,
