@@ -36,6 +36,7 @@ function Products() {
     name: "",
     price: "",
     stock: "",
+    unit: "",
   });
 
   // format tiền
@@ -62,7 +63,7 @@ function Products() {
 
   const openAddModal = () => {
     setEditProduct(null);
-    setFormData({ name: "", price: "", stock: "" });
+    setFormData({ name: "", price: "", stock: "", unit: "" });
     setShowModal(true);
   };
 
@@ -72,6 +73,7 @@ function Products() {
       name: product.name,
       price: product.price,
       stock: product.stock,
+      unit: product.unit || "",
     });
     setShowModal(true);
   };
@@ -171,6 +173,9 @@ function Products() {
                   Tồn kho
                 </th>
                 <th className="p-4 text-left text-sm font-semibold text-gray-700">
+                  Đơn vị
+                </th>
+                <th className="p-4 text-left text-sm font-semibold text-gray-700">
                   Thao tác
                 </th>
               </tr>
@@ -198,6 +203,7 @@ function Products() {
                         {product.stock}
                       </span>
                     </td>
+                    <td className="p-4 text-gray-700">{product.unit || "-"}</td>
                     <td className="p-4">
                       <div className="flex gap-2">
                         <button
@@ -339,6 +345,21 @@ function Products() {
                     }
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Đơn vị
+                </label>
+
+                <input
+                  className="pl-4 pr-4 py-2 border border-gray-300 rounded-lg w-full"
+                  placeholder="Ví dụ: chai, kg, hộp..."
+                  value={formData.unit}
+                  onChange={(e) =>
+                    setFormData({ ...formData, unit: e.target.value })
+                  }
+                />
               </div>
             </div>
 
