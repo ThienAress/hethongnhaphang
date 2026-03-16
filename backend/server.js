@@ -36,6 +36,7 @@ app.get("/", (req, res) => {
   res.send("API running");
 });
 
+api.get("/api/dashboard");
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
