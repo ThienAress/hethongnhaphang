@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import {
   Package,
@@ -6,11 +6,15 @@ import {
   Archive,
   ChevronRight,
   Search,
+  ChevronsUpDown,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 
 function Inventory() {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
   useEffect(() => {
     fetchInventory();
@@ -32,8 +36,43 @@ function Inventory() {
     p.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  // Sắp xếp sản phẩm theo sortConfig
+  const sortedProducts = useMemo(() => {
+    if (!sortConfig.key) return filteredProducts;
+    return [...filteredProducts].sort((a, b) => {
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredProducts, sortConfig]);
+
   // Tính tổng giá trị toàn bộ kho (dựa trên tất cả sản phẩm, không filter)
   const totalValue = products.reduce((acc, p) => acc + (p.total || 0), 0);
+
+  // Xử lý khi click vào cột có thể sort
+  const handleSort = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        // Đảo chiều nếu đang sort theo cột này
+        return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
+      }
+      // Mặc định sort giảm dần (cao → thấp) khi click lần đầu
+      return { key, direction: "desc" };
+    });
+  };
+
+  // Hàm lấy icon sort phù hợp
+  const getSortIcon = (columnKey) => {
+    if (sortConfig.key !== columnKey)
+      return <ChevronsUpDown className="h-4 w-4" />;
+    return sortConfig.direction === "asc" ? (
+      <ChevronUp className="h-4 w-4" />
+    ) : (
+      <ChevronDown className="h-4 w-4" />
+    );
+  };
 
   return (
     <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
@@ -114,14 +153,22 @@ function Inventory() {
                     Tồn kho
                   </div>
                 </th>
-                <th className="p-4 text-left text-sm font-semibold text-gray-700">
+                <th
+                  className="p-4 text-left text-sm font-semibold text-gray-700 cursor-pointer select-none"
+                  onClick={() => handleSort("price")}
+                >
                   <div className="flex items-center gap-2">
+                    {getSortIcon("price")}
                     <DollarSign className="h-4 w-4" />
                     Giá nhập
                   </div>
                 </th>
-                <th className="p-4 text-left text-sm font-semibold text-gray-700">
+                <th
+                  className="p-4 text-left text-sm font-semibold text-gray-700 cursor-pointer select-none"
+                  onClick={() => handleSort("total")}
+                >
                   <div className="flex items-center gap-2">
+                    {getSortIcon("total")}
                     <ChevronRight className="h-4 w-4" />
                     Tổng giá trị
                   </div>
@@ -129,8 +176,8 @@ function Inventory() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {filteredProducts.length > 0 ? (
-                filteredProducts.map((p) => (
+              {sortedProducts.length > 0 ? (
+                sortedProducts.map((p) => (
                   <tr key={p._id} className="hover:bg-gray-50 transition">
                     <td className="p-4 font-medium text-gray-900">{p.name}</td>
                     <td className="p-4">
